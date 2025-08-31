@@ -1,12 +1,11 @@
 // lib/src/presentation/screens/home_screen.dart
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../utils/app_colors.dart';
-// 1. Importa la nueva pantalla de detalle.
 import 'detail_screen.dart';
 
 final String unsplashApiKey = dotenv.env['UNSPLASH_ACCESS_KEY'] ?? 'API_KEY_NO_ENCONTRADA';
@@ -71,13 +70,19 @@ class HomeScreen extends StatelessWidget {
                   child: Hero(
                     // El tag aquí debe coincidir EXACTAMENTE con el de la pantalla de detalle.
                     tag: imageUrlSmall,
-                    child: Image.network(
-                      imageUrlSmall, // Mostramos la imagen pequeña en la galería.
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrlSmall, // Mostramos la imagen pequeña en la galería.
                       fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(child: CircularProgressIndicator());
-                      },
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      ),
                     ),
                   ),
                 );
