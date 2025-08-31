@@ -6,12 +6,6 @@ Primer proyecto Flutter Version 3.0
 
 ![Screenshot_20250830_230423](https://github.com/user-attachments/assets/35d4e324-13f8-4c63-85e9-48830446cdfd)
 
-
-
-![Screenshot_20250830_230423](https://github.com/user-attachments/assets/185dd9e3-6ffe-4676-9c2e-044835b7a423)
-
-
-
 ## Getting Started
 
 This project is a starting point for a Flutter application.
