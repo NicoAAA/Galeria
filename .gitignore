@@ -17,6 +17,9 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+# README IMAGES
+Screenshot_20250830_230423.jpg
+Screenshot_20250830_230522.jpg
 
 # Secret files
 .env
