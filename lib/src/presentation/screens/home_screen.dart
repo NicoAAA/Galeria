@@ -118,14 +118,56 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-          const ListTile(title: Text("Inicio"), leading: Icon(Icons.home)),
+          ListTile(
+            title: const Text(
+              "Inicio",
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+            leading: const Icon(Icons.home, color: AppColors.textSecondary),
+            onTap: () {},
+          ),
           const Divider(height: 0.2),
-          const ListTile(title: Text("Tiendas"), leading: Icon(Icons.storefront)),
-          const ListTile(title: Text("Promociones"), leading: Icon(Icons.shopping_cart)),
-          const ListTile(title: Text("Categorias"), leading: Icon(Icons.category)),
+          ListTile(
+            title: const Text(
+              "Tiendas",
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+            leading: const Icon(Icons.storefront, color: AppColors.textSecondary),
+            onTap: () {},
+          ),
+          ListTile(
+            title: const Text(
+              "Promociones",
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+            leading: const Icon(Icons.shopping_cart, color: AppColors.textSecondary),
+            onTap: () {},
+          ),
+          ListTile(
+            title: const Text(
+              "Categorías",
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+            leading: const Icon(Icons.category, color: AppColors.textSecondary),
+            onTap: () {},
+          ),
           const Divider(height: 0.2),
-          const ListTile(title: Text("email"), leading: Icon(Icons.mail)),
-          const ListTile(title: Text('Soport'), leading: Icon(Icons.contact_phone_sharp)),
+          ListTile(
+            title: const Text(
+              "Email",
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+            leading: const Icon(Icons.mail, color: AppColors.textSecondary),
+            onTap: () {},
+          ),
+          ListTile(
+            title: const Text(
+              "Soporte",
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+            leading: const Icon(Icons.contact_phone_sharp, color: AppColors.textSecondary),
+            onTap: () {},
+          ),
         ],
       ),
     );
