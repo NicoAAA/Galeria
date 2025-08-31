@@ -5,16 +5,23 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../utils/app_colors.dart'; // Importa tus colores
+import '../../utils/app_colors.dart';
+// 1. Importa la nueva pantalla de detalle.
+import 'detail_screen.dart';
 
 final String unsplashApiKey = dotenv.env['UNSPLASH_ACCESS_KEY'] ?? 'API_KEY_NO_ENCONTRADA';
 
-Future<List<String>> fetchImages() async {
-  // ... (Esta función no cambia)
+Future<List<Map<String, String>>> fetchImages() async {
   final response = await http.get(Uri.parse('https://api.unsplash.com/photos/random?count=30&client_id=$unsplashApiKey'));
   if (response.statusCode == 200) {
     List<dynamic> data = jsonDecode(response.body);
-    return data.map<String>((item) => item['urls']['small'] as String).toList();
+    // 2. Modificamos la función para que devuelva un mapa con la URL pequeña y la regular.
+    return data.map<Map<String, String>>((item) {
+      return {
+        'small': item['urls']['small'] as String,
+        'regular': item['urls']['regular'] as String,
+      };
+    }).toList();
   } else {
     throw Exception('Fallo al cargar las imágenes. Código: ${response.statusCode}');
   }
@@ -27,11 +34,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // El estilo del título ahora viene del tema.
         title: const Text('Galería con Unsplash'),
       ),
-      body: FutureBuilder<List<String>>(
-        // ... (El FutureBuilder no cambia)
+      // 3. Actualizamos el tipo del FutureBuilder para que coincida con la nueva función.
+      body: FutureBuilder<List<Map<String, String>>>(
         future: fetchImages(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -39,17 +45,41 @@ class HomeScreen extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}', textAlign: TextAlign.center));
           } else if (snapshot.hasData) {
-            final imageURLs = snapshot.data!;
+            final images = snapshot.data!;
             return GridView.builder(
               padding: const EdgeInsets.all(4),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 4, mainAxisSpacing: 4),
-              itemCount: imageURLs.length,
+              itemCount: images.length,
               itemBuilder: (context, index) {
-                return Image.network(imageURLs[index], fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
+                final imageUrlSmall = images[index]['small']!;
+                final imageUrlRegular = images[index]['regular']!;
+                
+                // 4. Envolvemos la imagen en GestureDetector y Hero.
+                return GestureDetector(
+                  onTap: () {
+                    // Acción de navegar a la nueva pantalla.
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailScreen(
+                          images: images, // Pasamos la imagen de mayor calidad.
+                          initialIndex: index, // El tag debe ser único. Usamos la URL pequeña.
+                        ),
+                      ),
+                    );
                   },
+                  child: Hero(
+                    // El tag aquí debe coincidir EXACTAMENTE con el de la pantalla de detalle.
+                    tag: imageUrlSmall,
+                    child: Image.network(
+                      imageUrlSmall, // Mostramos la imagen pequeña en la galería.
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                    ),
+                  ),
                 );
               },
             );
@@ -60,7 +90,6 @@ class HomeScreen extends StatelessWidget {
       ),
       drawer: _buildDrawer(),
       floatingActionButton: FloatingActionButton(
-        // Los colores ahora vienen del tema.
         onPressed: () => print('FAB presionado'),
         child: const Icon(Icons.add),
       ),
@@ -69,6 +98,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Drawer _buildDrawer() {
+    // ... (Este método no cambia)
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -78,13 +108,11 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Este estilo es específico, así que lo mantenemos, pero usando los colores centralizados.
                 Text('Sena CBA', style: GoogleFonts.passeroOne(fontSize: 30, color: AppColors.textPrimary)),
                 Text('Bienvenidos', style: GoogleFonts.passeroOne(fontSize: 30, color: AppColors.textPrimary)),
               ],
             ),
           ),
-          // El estilo de fuente (Roboto) ahora se aplica automáticamente por el tema.
           const ListTile(title: Text("Inicio"), leading: Icon(Icons.home)),
           const Divider(height: 0.2),
           const ListTile(title: Text("Tiendas"), leading: Icon(Icons.storefront)),
@@ -92,15 +120,15 @@ class HomeScreen extends StatelessWidget {
           const ListTile(title: Text("Categorias"), leading: Icon(Icons.category)),
           const Divider(height: 0.2),
           const ListTile(title: Text("email"), leading: Icon(Icons.mail)),
-          const ListTile(title: Text('Soporte'), leading: Icon(Icons.contact_phone_sharp)),
+          const ListTile(title: Text('Soport'), leading: Icon(Icons.contact_phone_sharp)),
         ],
       ),
     );
   }
 
   BottomAppBar _buildBottomAppBar() {
+    // ... (Este método no cambia)
     return BottomAppBar(
-      // El color ahora viene del tema.
       shape: const CircularNotchedRectangle(),
       notchMargin: 10,
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
@@ -109,7 +137,6 @@ class HomeScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            // El color del ícono ahora viene del tema del BottomAppBar
             icon: const Icon(Icons.menu, color: AppColors.textPrimary),
             onPressed: () {},
             visualDensity: VisualDensity.compact,
